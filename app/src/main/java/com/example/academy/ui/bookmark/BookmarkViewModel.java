@@ -3,12 +3,18 @@ package com.example.academy.ui.bookmark;
 import androidx.lifecycle.ViewModel;
 
 import com.example.academy.data.CourseEntity;
+import com.example.academy.data.source.AcademyRepository;
 import com.example.academy.utils.DataDummy;
 
 import java.util.List;
 
 public class BookmarkViewModel extends ViewModel {
+    private AcademyRepository academyRepository;
+    public BookmarkViewModel(AcademyRepository mAcademyRepository) {
+        this.academyRepository = mAcademyRepository;
+    }
+
     List<CourseEntity> getBookmarks() {
-        return DataDummy.generateDummyCourses();
+        return academyRepository.getBookmarkedCourses();
     }
 }

@@ -3,12 +3,14 @@ package com.example.academy.ui.reader;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
 import com.example.academy.R;
 import com.example.academy.ui.reader.content.ModuleContentFragment;
 import com.example.academy.ui.reader.list.ModuleListFragment;
+import com.example.academy.viewmodel.ViewModelFactory;
 
 public class CourseReaderActivity extends AppCompatActivity implements CourseReaderCallback {
 
@@ -19,10 +21,13 @@ public class CourseReaderActivity extends AppCompatActivity implements CourseRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_reader);
 
+        ViewModelFactory factory = ViewModelFactory.getInstance(this);
+        CourseReaderViewModel viewModel = new ViewModelProvider(this, factory).get(CourseReaderViewModel.class);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String courseId = bundle.getString(EXTRA_COURSE_ID);
             if (courseId != null) {
+                viewModel.setSelectedCourse(courseId);
                 populateFragment();
             }
         }

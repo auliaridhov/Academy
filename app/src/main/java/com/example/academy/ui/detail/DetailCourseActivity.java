@@ -9,6 +9,7 @@ import com.example.academy.ui.reader.CourseReaderActivity;
 import com.example.academy.R;
 import com.example.academy.data.CourseEntity;
 import com.example.academy.data.ModuleEntity;
+import com.example.academy.viewmodel.ViewModelFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -49,7 +50,8 @@ public class DetailCourseActivity extends AppCompatActivity {
         RecyclerView rvModule = findViewById(R.id.rv_module);
         imagePoster = findViewById(R.id.image_poster);
 
-        DetailCourseViewModel viewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(DetailCourseViewModel.class);
+        ViewModelFactory factory = ViewModelFactory.getInstance(this);
+        DetailCourseViewModel viewModel = new ViewModelProvider(this,factory).get(DetailCourseViewModel.class);
 
         DetailCourseAdapter adapter = new DetailCourseAdapter();
 

@@ -15,6 +15,7 @@ import android.webkit.WebView;
 import com.example.academy.ui.reader.CourseReaderViewModel;
 import com.example.academy.R;
 import com.example.academy.data.ModuleEntity;
+import com.example.academy.viewmodel.ViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,7 +52,8 @@ public class ModuleContentFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) {
-            CourseReaderViewModel viewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.NewInstanceFactory()).get(CourseReaderViewModel.class);
+            ViewModelFactory factory = ViewModelFactory.getInstance(requireActivity());
+            CourseReaderViewModel viewModel = new ViewModelProvider(requireActivity(), factory).get(CourseReaderViewModel.class);
             ModuleEntity module = viewModel.getSelectedModule();
             populateWebView(module);
         }
