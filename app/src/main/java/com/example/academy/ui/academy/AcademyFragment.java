@@ -24,6 +24,8 @@ public class AcademyFragment extends Fragment {
     private RecyclerView rvCourse;
     private ProgressBar progressBar;
 
+
+    //test github
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_academy, container, false);
