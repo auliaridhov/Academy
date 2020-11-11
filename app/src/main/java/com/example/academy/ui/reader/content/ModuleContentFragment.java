@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import com.example.academy.ui.reader.CourseReaderViewModel;
 import com.example.academy.R;
@@ -26,6 +27,7 @@ public class ModuleContentFragment extends Fragment {
     public static final String TAG = ModuleContentFragment.class.getSimpleName();
 
     private WebView webView;
+    private ProgressBar progressBar;
 
     public ModuleContentFragment() {
         // Required empty public constructor
@@ -46,17 +48,22 @@ public class ModuleContentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         webView = view.findViewById(R.id.web_view);
+        progressBar = view.findViewById(R.id.progress_bar);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getActivity() != null) {
-            ViewModelFactory factory = ViewModelFactory.getInstance(requireActivity());
-            CourseReaderViewModel viewModel = new ViewModelProvider(requireActivity(), factory).get(CourseReaderViewModel.class);
-            ModuleEntity module = viewModel.getSelectedModule();
-            populateWebView(module);
-        }
+        ViewModelFactory factory = ViewModelFactory.getInstance(requireActivity());
+        CourseReaderViewModel viewModel = new ViewModelProvider(requireActivity(), factory).get(CourseReaderViewModel.class);
+
+        progressBar.setVisibility(View.VISIBLE);
+        viewModel.getSelectedModule().observe(this, module -> {
+            if (module != null) {
+                progressBar.setVisibility(View.GONE);
+                populateWebView(module);
+            }
+        });
     }
 
     private void populateWebView(ModuleEntity module) {

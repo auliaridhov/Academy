@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -32,6 +34,7 @@ public class DetailCourseActivity extends AppCompatActivity {
     private TextView textDesc;
     private TextView textDate;
     private ImageView imagePoster;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,7 @@ public class DetailCourseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        progressBar = findViewById(R.id.progress_bar);
         btnStart = findViewById(R.id.btn_start);
         textTitle = findViewById(R.id.text_title);
         textDesc = findViewById(R.id.text_description);
@@ -50,19 +54,23 @@ public class DetailCourseActivity extends AppCompatActivity {
         RecyclerView rvModule = findViewById(R.id.rv_module);
         imagePoster = findViewById(R.id.image_poster);
 
-        ViewModelFactory factory = ViewModelFactory.getInstance(this);
-        DetailCourseViewModel viewModel = new ViewModelProvider(this,factory).get(DetailCourseViewModel.class);
-
         DetailCourseAdapter adapter = new DetailCourseAdapter();
+        ViewModelFactory factory = ViewModelFactory.getInstance(this);
+        DetailCourseViewModel viewModel = new ViewModelProvider(this, factory).get(DetailCourseViewModel.class);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String courseId = extras.getString(EXTRA_COURSE);
             if (courseId != null) {
                 viewModel.setSelectedCourse(courseId);
-                List<ModuleEntity> modules = viewModel.getModules();
-                adapter.setModules(modules);
-                populateCourse(viewModel.getCourse());
+
+                progressBar.setVisibility(View.VISIBLE);
+                viewModel.getModules().observe(this, modules -> {
+                    progressBar.setVisibility(View.GONE);
+                    adapter.setModules(modules);
+                    adapter.notifyDataSetChanged();
+                });
+                viewModel.getCourse().observe(this, course -> populateCourse(course));
             }
         }
 

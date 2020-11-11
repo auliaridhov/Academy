@@ -49,10 +49,15 @@ public class BookmarkFragment extends Fragment implements BookmarkFragmentCallba
         if (getActivity() != null) {
             ViewModelFactory factory = ViewModelFactory.getInstance(getActivity());
             BookmarkViewModel viewModel = new ViewModelProvider(this, factory).get(BookmarkViewModel.class);
-            List<CourseEntity> courses = viewModel.getBookmarks();
 
             BookmarkAdapter adapter = new BookmarkAdapter(this);
-            adapter.setCourses(courses);
+            progressBar.setVisibility(View.VISIBLE);
+            viewModel.getBookmarks().observe(this, courses -> {
+                progressBar.setVisibility(View.GONE);
+                adapter.setCourses(courses);
+                adapter.notifyDataSetChanged();
+            });
+
             rvBookmark.setLayoutManager(new LinearLayoutManager(getContext()));
             rvBookmark.setHasFixedSize(true);
             rvBookmark.setAdapter(adapter);

@@ -1,5 +1,6 @@
 package com.example.academy.ui.bookmark;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.academy.data.CourseEntity;
@@ -14,7 +15,7 @@ public class BookmarkViewModel extends ViewModel {
         this.academyRepository = mAcademyRepository;
     }
 
-    List<CourseEntity> getBookmarks() {
+    public LiveData<List<CourseEntity>> getBookmarks() {
         return academyRepository.getBookmarkedCourses();
     }
 }
