@@ -39,6 +39,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.1.0'
     implementation 'androidx.navigation:navigation-ui:2.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.test.espresso:espresso-idling-resource:$idleResourceVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$archLifecycleVersion"
 
     //testing
