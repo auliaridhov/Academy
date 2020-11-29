@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -62,15 +63,28 @@ public class DetailCourseActivity extends AppCompatActivity {
         if (extras != null) {
             String courseId = extras.getString(EXTRA_COURSE);
             if (courseId != null) {
-                viewModel.setSelectedCourse(courseId);
-
-                progressBar.setVisibility(View.VISIBLE);
-                viewModel.getModules().observe(this, modules -> {
-                    progressBar.setVisibility(View.GONE);
-                    adapter.setModules(modules);
-                    adapter.notifyDataSetChanged();
+                //viewModel.setSelectedCourse(courseId);
+                viewModel.courseModule.observe(this, courseWithModuleResource -> {
+                    if (courseWithModuleResource != null) {
+                        switch (courseWithModuleResource.status) {
+                            case LOADING:
+                                progressBar.setVisibility(View.VISIBLE);
+                                break;
+                            case SUCCESS:
+                                if (courseWithModuleResource.data != null) {
+                                    progressBar.setVisibility(View.GONE);
+                                    adapter.setModules(courseWithModuleResource.data.mModules);
+                                    adapter.notifyDataSetChanged();
+                                    populateCourse(courseWithModuleResource.data.mCourse);
+                                }
+                                break;
+                            case ERROR:
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getApplicationContext(), "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
                 });
-                viewModel.getCourse().observe(this, course -> populateCourse(course));
             }
         }
 

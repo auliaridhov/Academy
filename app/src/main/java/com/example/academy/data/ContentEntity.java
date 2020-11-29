@@ -1,7 +1,10 @@
 package com.example.academy.data;
 
+import androidx.room.ColumnInfo;
+
 public class ContentEntity {
 
+    @ColumnInfo(name = "content")
     private String mContent;
 
     public ContentEntity(String content) {

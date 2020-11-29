@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.academy.R;
 import com.example.academy.ui.reader.content.ModuleContentFragment;
@@ -28,6 +29,7 @@ public class CourseReaderActivity extends AppCompatActivity implements CourseRea
             String courseId = bundle.getString(EXTRA_COURSE_ID);
             if (courseId != null) {
                 viewModel.setSelectedCourse(courseId);
+                Toast.makeText(this, courseId, Toast.LENGTH_SHORT).show();
                 populateFragment();
             }
         }

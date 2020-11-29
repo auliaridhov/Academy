@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.academy.ui.reader.CourseReaderViewModel;
 import com.example.academy.R;
@@ -57,11 +58,25 @@ public class ModuleContentFragment extends Fragment {
         ViewModelFactory factory = ViewModelFactory.getInstance(requireActivity());
         CourseReaderViewModel viewModel = new ViewModelProvider(requireActivity(), factory).get(CourseReaderViewModel.class);
 
-        progressBar.setVisibility(View.VISIBLE);
-        viewModel.getSelectedModule().observe(this, module -> {
-            if (module != null) {
-                progressBar.setVisibility(View.GONE);
-                populateWebView(module);
+        viewModel.selectedModule.observe(this, moduleEntity -> {
+            if (moduleEntity != null) {
+                switch (moduleEntity.status) {
+                    case LOADING:
+                        progressBar.setVisibility(View.VISIBLE);
+                        break;
+                    case SUCCESS:
+                        if (moduleEntity.data != null) {
+                            progressBar.setVisibility(View.GONE);
+                            if (moduleEntity.data.contentEntity != null) {
+                                populateWebView(moduleEntity.data);
+                            }
+                        }
+                        break;
+                    case ERROR:
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
         });
     }

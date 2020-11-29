@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.academy.ui.reader.CourseReaderActivity;
 import com.example.academy.ui.reader.CourseReaderViewModel;
@@ -63,23 +64,6 @@ public class ModuleListFragment extends Fragment implements MyAdapterClickListen
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getActivity() != null) {
-            ViewModelFactory factory = ViewModelFactory.getInstance(requireActivity());
-            viewModel = new ViewModelProvider(requireActivity(), factory).get(CourseReaderViewModel.class);
-            adapter = new ModuleListAdapter(this);
-
-            progressBar.setVisibility(View.VISIBLE);
-            viewModel.getModules().observe(this, modules -> {
-                progressBar.setVisibility(View.GONE);
-                populateRecyclerView(modules);
-            });
-        }
-
-    }
-
-    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         courseReaderCallback = ((CourseReaderActivity) context);
@@ -89,6 +73,35 @@ public class ModuleListFragment extends Fragment implements MyAdapterClickListen
     public void onItemClicked(int position, String moduleId) {
         courseReaderCallback.moveTo(position, moduleId);
         viewModel.setSelectedModule(moduleId);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() != null) {
+            ViewModelFactory factory = ViewModelFactory.getInstance(requireActivity());
+            viewModel = new ViewModelProvider(requireActivity(), factory).get(CourseReaderViewModel.class);
+            adapter = new ModuleListAdapter(this);
+
+            viewModel.modules.observe(this, moduleEntities -> {
+                if (moduleEntities != null) {
+                    switch (moduleEntities.status) {
+                        case LOADING:
+                            progressBar.setVisibility(View.VISIBLE);
+                            break;
+                        case SUCCESS:
+                            progressBar.setVisibility(View.GONE);
+                            populateRecyclerView(moduleEntities.data);
+                            break;
+                        case ERROR:
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+            });
+        }
+
     }
 
     private void populateRecyclerView(List<ModuleEntity> modules) {
